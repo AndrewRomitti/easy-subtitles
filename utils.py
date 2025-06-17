@@ -8,7 +8,7 @@ def get_transcribed_text(filename):
 
     return result
 
-def get_text_clips(text, clip, delay=0):
+def get_text_clips(text, clip, font_path, delay=0):
     text_clip_array = []
 
     segments = text["segments"]
@@ -26,7 +26,7 @@ def get_text_clips(text, clip, delay=0):
                     stroke_color="black",
                     stroke_width=5,
                     color="white",
-                    font="font\\static\\Montserrat-ExtraBold.ttf",
+                    font=font_path,
                     method="caption",
                     size=(clip.w, clip.h),
                 ).with_start(start)
