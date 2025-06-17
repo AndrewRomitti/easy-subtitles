@@ -1,12 +1,12 @@
 from utils import *
 from moviepy import CompositeVideoClip, VideoFileClip, AudioFileClip
 
-def create_subtitles(audio_path, video, font_path, output="output/main.mp4"):
+def create_subtitles(audio_path, video, font_path, align="center", output="output/main.mp4"):
     audio = AudioFileClip(audio_path)
     video = VideoFileClip(video).subclipped(0, audio.duration)
 
     transcribed_text = get_transcribed_text(audio_path)
-    text_clips = get_text_clips(transcribed_text, video, font_path)
+    text_clips = get_text_clips(transcribed_text, video, font_path, align)
 
 
     main_clip = CompositeVideoClip([video] + text_clips).with_audio(audio)

@@ -1,5 +1,5 @@
 import whisper
-from moviepy import TextClip
+from moviepy import TextClip, ColorClip, CompositeVideoClip
 from moviepy.video.fx import Margin
 
 def get_transcribed_text(filename):
@@ -9,10 +9,8 @@ def get_transcribed_text(filename):
 
     return result
 
-def get_text_clips(text, clip, font_path, delay=0):
+def get_text_clips(text, clip, font_path, align, delay=0):
     text_clip_array = []
-
-    margin = Margin(20)
 
     segments = text["segments"]
     for segment in segments:
@@ -29,17 +27,19 @@ def get_text_clips(text, clip, font_path, delay=0):
                 stroke_width=5,
                 color="white",
                 font=font_path,
-                method="label",
+                method="caption",
+                size=(clip.w, 200)
             )
 
-            txt = Margin(left=20, right=20, top=20, bottom=20, color=(0, 0, 0), opacity=0).apply(txt)
+            padding_v, padding_h = 10, 20
+            bg = ColorClip(
+                size=(txt.w + 2 * padding_h, txt.h + 2 * padding_v),
+                color=(0, 0, 0),
+            ).with_opacity(0)
 
-            txt = (txt
-                   .with_start(start)
-                   .with_end(end)
-                   .with_position(("center", "bottom"))
-                  )
+            padded = CompositeVideoClip([bg.with_duration(txt.duration), txt.with_position(("center", "center"))])
+            padded = padded.with_start(start).with_end(end).with_position(("center", align))
 
-            text_clip_array.append(txt)
+            text_clip_array.append(padded)
 
     return text_clip_array
